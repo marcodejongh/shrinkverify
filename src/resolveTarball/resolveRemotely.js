@@ -2,34 +2,22 @@
 var chalk = require('chalk');
 
 // modules
-var shell = require('../lib/shell');
+var readPkgJson = require('../lib/readPkgJson');
 
 // public
 module.exports = resolveRemotely;
 
 // implementation
 function resolveRemotely (dep) {
-  return shell('npm view ' + dep.id + ' --json')
-    .then(success, fail)
-    .catch(fail);
+  return readPkgJson(dep)
+    .then(getTarball);
 
-  function success (json) {
-    return readPkgJson(dep, json);
-  }
-
-  function fail () {
-    return '';
-  }
-}
-
-function readPkgJson (dep, json) {
-  return new Promise(function (resolve) {
-    var meta = JSON.parse(json);
+  function getTarball (meta) {
     if (!meta || !meta.dist || !meta.dist.tarball) {
       console.info(chalk.gray('? %s has no "dist.tarball" in `npm view %s --json`'), dep.id, dep.id);
-      resolve('');
+      return '';
     } else {
-      resolve(meta.dist.tarball);
+      return meta.dist.tarball;
     }
-  });
+  }
 }

@@ -8,8 +8,8 @@ var describeChanges = require('./describeChanges');
 var displayFailure = require('./displayFailure');
 var displaySummary = require('./displaySummary');
 
-function runCli (directory) {
-  return shrinkpack.analyse(directory)
+function runCli (directory, strict) {
+  return shrinkpack.analyse(directory, strict)
     .then(describeChanges, onFail)
     .then(shrinkpack.update, onFail)
     .then(displaySummary, onFail)

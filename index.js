@@ -4,7 +4,8 @@ var task = {
   addToCache: require('./src/addToCache'),
   addToBundle: require('./src/addToBundle'),
   rewriteGraph: require('./src/rewriteGraph'),
-  removeFromBundle: require('./src/removeFromBundle')
+  removeFromBundle: require('./src/removeFromBundle'),
+  verifyShasum: require('./src/verifyShasum')
 };
 
 module.exports = {
@@ -12,8 +13,8 @@ module.exports = {
   update: update
 };
 
-function analyse (directory) {
-  return Promise.resolve(task.init(directory));
+function analyse (directory, strict) {
+  return Promise.resolve(task.init(directory, strict));
 }
 
 function update (config) {
@@ -21,6 +22,7 @@ function update (config) {
     .then(addToCache, onFail)
     .then(addToBundle, onFail)
     .then(removeFromBundle, onFail)
+    .then(verifyShasum, onFail)
     .then(rewriteGraph, onFail)
     .then(onSuccess, onFail)
     .catch(onFail);
@@ -43,6 +45,10 @@ function update (config) {
 
   function removeFromBundle () {
     return task.removeFromBundle(config.deps.removeFromBundle);
+  }
+
+  function verifyShasum () {
+    return task.verifyShasum(config.deps.all, config.strict);
   }
 
   function onSuccess () {

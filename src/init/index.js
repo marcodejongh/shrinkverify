@@ -12,7 +12,7 @@ var readGraph = require('./readGraph');
 module.exports = init;
 
 // implementation
-function init (pwd) {
+function init (pwd, strict) {
   var graphPath = path.join(pwd, 'npm-shrinkwrap.json');
   var graph = getGraph(graphPath);
   var pathToBundle = createDirectory(pwd);
@@ -39,7 +39,8 @@ function init (pwd) {
       project: pwd,
       shrinkpack: pathToBundle
     },
-    startTime: new Date()
+    startTime: new Date(),
+    strict: strict
   };
 
   function needsResolving (dep) {

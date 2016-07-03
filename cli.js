@@ -16,12 +16,13 @@ program
   .arguments('[directory]')
   .action(function (directory) {
     directoryValue = directory;
-  });
+  })
+  .option('--strict', 'Enable shasum check');
 
 program.parse(process.argv);
 
 if (directoryValue) {
-  cli.run(path.resolve(directoryValue));
+  cli.run(path.resolve(directoryValue), program.strict);
 } else {
-  cli.run(process.cwd());
+  cli.run(process.cwd(), program.strict);
 }
